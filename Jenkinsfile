@@ -36,11 +36,20 @@ pipeline {
             }
         }
 
+        
         stage('Test') {
             steps {
                 sh '''
                     mkdir -p reports
-                    .venv/bin/pytest \
+        
+                    echo "Current directory:"
+                    pwd
+        
+                    echo "Checking app.py:"
+                    ls -l app.py
+        
+                    echo "Running tests:"
+                    PYTHONPATH="$WORKSPACE" .venv/bin/pytest \
                       --junitxml=reports/junit.xml \
                       --cov=app \
                       --cov-report=term-missing \
@@ -49,6 +58,7 @@ pipeline {
                 '''
             }
         }
+
 
         stage('Code Inspection') {
             steps {
