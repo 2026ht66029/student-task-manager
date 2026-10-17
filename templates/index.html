@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student Task Manager - Jenkins CI/CD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <p class="eyebrow">DEVOPS LAB · LIVE DEPLOYMENT</p>
+        <h1>Student Task Manager</h1>
+        <p class="subtitle">A small Flask application delivered through Jenkins and inspected by SonarQube.</p>
+      </header>
+
+      <section class="panel" aria-labelledby="add-heading">
+        <h2 id="add-heading">Add a task</h2>
+        <form action="{{ url_for('add_task') }}" method="post">
+          <label class="sr-only" for="title">Task title</label>
+          <input id="title" name="title" type="text" placeholder="What needs to be done?" required>
+          <button type="submit">Add task</button>
+        </form>
+      </section>
+
+      <section class="panel" aria-labelledby="tasks-heading">
+        <div class="section-heading">
+          <h2 id="tasks-heading">Current tasks</h2>
+          <span>{{ tasks|length }} total</span>
+        </div>
+        <ul class="tasks">
+          {% for task in tasks %}
+          <li class="task{% if task.completed %} done{% endif %}">
+            <div>
+              <span class="task-number">{{ "%02d"|format(task.id) }}</span>
+              <strong>{{ task.title }}</strong>
+            </div>
+            {% if task.completed %}
+              <span class="status">Completed</span>
+            {% else %}
+              <form action="{{ url_for('complete_task', task_id=task.id) }}" method="post">
+                <button class="secondary" type="submit">Mark complete</button>
+              </form>
+            {% endif %}
+          </li>
+          {% else %}
+          <li class="empty">No tasks yet. Add the first one above.</li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <footer>
+        <span class="health-dot"></span>
+        Health endpoint: <code>/health</code>
+      </footer>
+    </main>
+  </body>
+</html>
+
